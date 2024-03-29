@@ -1,0 +1,110 @@
+In file included from /usr/include/c++/10/vector:66,
+                 from pong.cpp:3:
+/usr/include/c++/10/bits/stl_uninitialized.h: In instantiation of ‘_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = std::unique_ptr<ball>*; _ForwardIterator = std::unique_ptr<ball>*]’:
+/usr/include/c++/10/bits/stl_uninitialized.h:325:37:   required from ‘_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _InputIterator, _ForwardIterator, std::allocator<_Tp>&) [with _InputIterator = std::unique_ptr<ball>*; _ForwardIterator = std::unique_ptr<ball>*; _Tp = std::unique_ptr<ball>]’
+/usr/include/c++/10/bits/vector.tcc:245:35:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<ball>; _Alloc = std::allocator<std::unique_ptr<ball> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_uninitialized.h:137:72: error: static assertion failed: result type must be constructible from value type of input range
+  137 |       static_assert(is_constructible<_ValueType2, decltype(*__first)>::value,
+      |                                                                        ^~~~~
+/usr/include/c++/10/bits/stl_uninitialized.h: In instantiation of ‘_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = std::unique_ptr<paddle>*; _ForwardIterator = std::unique_ptr<paddle>*]’:
+/usr/include/c++/10/bits/stl_uninitialized.h:325:37:   required from ‘_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _InputIterator, _ForwardIterator, std::allocator<_Tp>&) [with _InputIterator = std::unique_ptr<paddle>*; _ForwardIterator = std::unique_ptr<paddle>*; _Tp = std::unique_ptr<paddle>]’
+/usr/include/c++/10/bits/vector.tcc:245:35:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<paddle>; _Alloc = std::allocator<std::unique_ptr<paddle> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_uninitialized.h:137:72: error: static assertion failed: result type must be constructible from value type of input range
+/usr/include/c++/10/bits/stl_uninitialized.h: In instantiation of ‘_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = __gnu_cxx::__normal_iterator<const std::unique_ptr<ball>*, std::vector<std::unique_ptr<ball> > >; _ForwardIterator = std::unique_ptr<ball>*]’:
+/usr/include/c++/10/bits/stl_uninitialized.h:325:37:   required from ‘_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _InputIterator, _ForwardIterator, std::allocator<_Tp>&) [with _InputIterator = __gnu_cxx::__normal_iterator<const std::unique_ptr<ball>*, std::vector<std::unique_ptr<ball> > >; _ForwardIterator = std::unique_ptr<ball>*; _Tp = std::unique_ptr<ball>]’
+/usr/include/c++/10/bits/stl_vector.h:1514:35:   required from ‘std::vector<_Tp, _Alloc>::pointer std::vector<_Tp, _Alloc>::_M_allocate_and_copy(std::vector<_Tp, _Alloc>::size_type, _ForwardIterator, _ForwardIterator) [with _ForwardIterator = __gnu_cxx::__normal_iterator<const std::unique_ptr<ball>*, std::vector<std::unique_ptr<ball> > >; _Tp = std::unique_ptr<ball>; _Alloc = std::allocator<std::unique_ptr<ball> >; std::vector<_Tp, _Alloc>::pointer = std::unique_ptr<ball>*; std::vector<_Tp, _Alloc>::size_type = long unsigned int]’
+/usr/include/c++/10/bits/vector.tcc:226:44:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<ball>; _Alloc = std::allocator<std::unique_ptr<ball> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_uninitialized.h:137:72: error: static assertion failed: result type must be constructible from value type of input range
+/usr/include/c++/10/bits/stl_uninitialized.h: In instantiation of ‘_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = __gnu_cxx::__normal_iterator<const std::unique_ptr<paddle>*, std::vector<std::unique_ptr<paddle> > >; _ForwardIterator = std::unique_ptr<paddle>*]’:
+/usr/include/c++/10/bits/stl_uninitialized.h:325:37:   required from ‘_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _InputIterator, _ForwardIterator, std::allocator<_Tp>&) [with _InputIterator = __gnu_cxx::__normal_iterator<const std::unique_ptr<paddle>*, std::vector<std::unique_ptr<paddle> > >; _ForwardIterator = std::unique_ptr<paddle>*; _Tp = std::unique_ptr<paddle>]’
+/usr/include/c++/10/bits/stl_vector.h:1514:35:   required from ‘std::vector<_Tp, _Alloc>::pointer std::vector<_Tp, _Alloc>::_M_allocate_and_copy(std::vector<_Tp, _Alloc>::size_type, _ForwardIterator, _ForwardIterator) [with _ForwardIterator = __gnu_cxx::__normal_iterator<const std::unique_ptr<paddle>*, std::vector<std::unique_ptr<paddle> > >; _Tp = std::unique_ptr<paddle>; _Alloc = std::allocator<std::unique_ptr<paddle> >; std::vector<_Tp, _Alloc>::pointer = std::unique_ptr<paddle>*; std::vector<_Tp, _Alloc>::size_type = long unsigned int]’
+/usr/include/c++/10/bits/vector.tcc:226:44:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<paddle>; _Alloc = std::allocator<std::unique_ptr<paddle> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_uninitialized.h:137:72: error: static assertion failed: result type must be constructible from value type of input range
+In file included from /usr/include/c++/10/bits/char_traits.h:39,
+                 from /usr/include/c++/10/ios:40,
+                 from /usr/include/c++/10/ostream:38,
+                 from /usr/include/c++/10/iostream:39,
+                 from pong.cpp:1:
+/usr/include/c++/10/bits/stl_algobase.h: In instantiation of ‘static _OI std::__copy_move<false, false, std::random_access_iterator_tag>::__copy_m(_II, _II, _OI) [with _II = const std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’:
+/usr/include/c++/10/bits/stl_algobase.h:472:30:   required from ‘_OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = false; _II = const std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’
+/usr/include/c++/10/bits/stl_algobase.h:506:42:   required from ‘_OI std::__copy_move_a1(_II, _II, _OI) [with bool _IsMove = false; _II = const std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’
+/usr/include/c++/10/bits/stl_algobase.h:514:31:   required from ‘_OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = false; _II = __gnu_cxx::__normal_iterator<const std::unique_ptr<ball>*, std::vector<std::unique_ptr<ball> > >; _OI = __gnu_cxx::__normal_iterator<std::unique_ptr<ball>*, std::vector<std::unique_ptr<ball> > >]’
+/usr/include/c++/10/bits/stl_algobase.h:569:7:   required from ‘_OI std::copy(_II, _II, _OI) [with _II = __gnu_cxx::__normal_iterator<const std::unique_ptr<ball>*, std::vector<std::unique_ptr<ball> > >; _OI = __gnu_cxx::__normal_iterator<std::unique_ptr<ball>*, std::vector<std::unique_ptr<ball> > >]’
+/usr/include/c++/10/bits/vector.tcc:238:31:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<ball>; _Alloc = std::allocator<std::unique_ptr<ball> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_algobase.h:380:18: error: use of deleted function ‘std::unique_ptr<_Tp, _Dp>& std::unique_ptr<_Tp, _Dp>::operator=(const std::unique_ptr<_Tp, _Dp>&) [with _Tp = ball; _Dp = std::default_delete<ball>]’
+  380 |        *__result = *__first;
+      |        ~~~~~~~~~~^~~~~~~~~~
+In file included from /usr/include/c++/10/memory:83,
+                 from /usr/include/c++/10/thread:44,
+                 from pong.cpp:5:
+/usr/include/c++/10/bits/unique_ptr.h:469:19: note: declared here
+  469 |       unique_ptr& operator=(const unique_ptr&) = delete;
+      |                   ^~~~~~~~
+In file included from /usr/include/c++/10/bits/char_traits.h:39,
+                 from /usr/include/c++/10/ios:40,
+                 from /usr/include/c++/10/ostream:38,
+                 from /usr/include/c++/10/iostream:39,
+                 from pong.cpp:1:
+/usr/include/c++/10/bits/stl_algobase.h: In instantiation of ‘static _OI std::__copy_move<false, false, std::random_access_iterator_tag>::__copy_m(_II, _II, _OI) [with _II = std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’:
+/usr/include/c++/10/bits/stl_algobase.h:472:30:   required from ‘_OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = false; _II = std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’
+/usr/include/c++/10/bits/stl_algobase.h:506:42:   required from ‘_OI std::__copy_move_a1(_II, _II, _OI) [with bool _IsMove = false; _II = std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’
+/usr/include/c++/10/bits/stl_algobase.h:514:31:   required from ‘_OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = false; _II = std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’
+/usr/include/c++/10/bits/stl_algobase.h:569:7:   required from ‘_OI std::copy(_II, _II, _OI) [with _II = std::unique_ptr<ball>*; _OI = std::unique_ptr<ball>*]’
+/usr/include/c++/10/bits/vector.tcc:243:17:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<ball>; _Alloc = std::allocator<std::unique_ptr<ball> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_algobase.h:380:18: error: use of deleted function ‘std::unique_ptr<_Tp, _Dp>& std::unique_ptr<_Tp, _Dp>::operator=(const std::unique_ptr<_Tp, _Dp>&) [with _Tp = ball; _Dp = std::default_delete<ball>]’
+  380 |        *__result = *__first;
+      |        ~~~~~~~~~~^~~~~~~~~~
+In file included from /usr/include/c++/10/memory:83,
+                 from /usr/include/c++/10/thread:44,
+                 from pong.cpp:5:
+/usr/include/c++/10/bits/unique_ptr.h:469:19: note: declared here
+  469 |       unique_ptr& operator=(const unique_ptr&) = delete;
+      |                   ^~~~~~~~
+In file included from /usr/include/c++/10/bits/char_traits.h:39,
+                 from /usr/include/c++/10/ios:40,
+                 from /usr/include/c++/10/ostream:38,
+                 from /usr/include/c++/10/iostream:39,
+                 from pong.cpp:1:
+/usr/include/c++/10/bits/stl_algobase.h: In instantiation of ‘static _OI std::__copy_move<false, false, std::random_access_iterator_tag>::__copy_m(_II, _II, _OI) [with _II = const std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’:
+/usr/include/c++/10/bits/stl_algobase.h:472:30:   required from ‘_OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = false; _II = const std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’
+/usr/include/c++/10/bits/stl_algobase.h:506:42:   required from ‘_OI std::__copy_move_a1(_II, _II, _OI) [with bool _IsMove = false; _II = const std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’
+/usr/include/c++/10/bits/stl_algobase.h:514:31:   required from ‘_OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = false; _II = __gnu_cxx::__normal_iterator<const std::unique_ptr<paddle>*, std::vector<std::unique_ptr<paddle> > >; _OI = __gnu_cxx::__normal_iterator<std::unique_ptr<paddle>*, std::vector<std::unique_ptr<paddle> > >]’
+/usr/include/c++/10/bits/stl_algobase.h:569:7:   required from ‘_OI std::copy(_II, _II, _OI) [with _II = __gnu_cxx::__normal_iterator<const std::unique_ptr<paddle>*, std::vector<std::unique_ptr<paddle> > >; _OI = __gnu_cxx::__normal_iterator<std::unique_ptr<paddle>*, std::vector<std::unique_ptr<paddle> > >]’
+/usr/include/c++/10/bits/vector.tcc:238:31:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<paddle>; _Alloc = std::allocator<std::unique_ptr<paddle> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_algobase.h:380:18: error: use of deleted function ‘std::unique_ptr<_Tp, _Dp>& std::unique_ptr<_Tp, _Dp>::operator=(const std::unique_ptr<_Tp, _Dp>&) [with _Tp = paddle; _Dp = std::default_delete<paddle>]’
+  380 |        *__result = *__first;
+      |        ~~~~~~~~~~^~~~~~~~~~
+In file included from /usr/include/c++/10/memory:83,
+                 from /usr/include/c++/10/thread:44,
+                 from pong.cpp:5:
+/usr/include/c++/10/bits/unique_ptr.h:469:19: note: declared here
+  469 |       unique_ptr& operator=(const unique_ptr&) = delete;
+      |                   ^~~~~~~~
+In file included from /usr/include/c++/10/bits/char_traits.h:39,
+                 from /usr/include/c++/10/ios:40,
+                 from /usr/include/c++/10/ostream:38,
+                 from /usr/include/c++/10/iostream:39,
+                 from pong.cpp:1:
+/usr/include/c++/10/bits/stl_algobase.h: In instantiation of ‘static _OI std::__copy_move<false, false, std::random_access_iterator_tag>::__copy_m(_II, _II, _OI) [with _II = std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’:
+/usr/include/c++/10/bits/stl_algobase.h:472:30:   required from ‘_OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = false; _II = std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’
+/usr/include/c++/10/bits/stl_algobase.h:506:42:   required from ‘_OI std::__copy_move_a1(_II, _II, _OI) [with bool _IsMove = false; _II = std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’
+/usr/include/c++/10/bits/stl_algobase.h:514:31:   required from ‘_OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = false; _II = std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’
+/usr/include/c++/10/bits/stl_algobase.h:569:7:   required from ‘_OI std::copy(_II, _II, _OI) [with _II = std::unique_ptr<paddle>*; _OI = std::unique_ptr<paddle>*]’
+/usr/include/c++/10/bits/vector.tcc:243:17:   required from ‘std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = std::unique_ptr<paddle>; _Alloc = std::allocator<std::unique_ptr<paddle> >]’
+objectManager.hpp:9:7:   required from here
+/usr/include/c++/10/bits/stl_algobase.h:380:18: error: use of deleted function ‘std::unique_ptr<_Tp, _Dp>& std::unique_ptr<_Tp, _Dp>::operator=(const std::unique_ptr<_Tp, _Dp>&) [with _Tp = paddle; _Dp = std::default_delete<paddle>]’
+  380 |        *__result = *__first;
+      |        ~~~~~~~~~~^~~~~~~~~~
+In file included from /usr/include/c++/10/memory:83,
+                 from /usr/include/c++/10/thread:44,
+                 from pong.cpp:5:
+/usr/include/c++/10/bits/unique_ptr.h:469:19: note: declared here
+  469 |       unique_ptr& operator=(const unique_ptr&) = delete;
+      |                   ^~~~~~~~
