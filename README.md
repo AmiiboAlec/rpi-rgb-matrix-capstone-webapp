@@ -6,7 +6,12 @@ This is very much a work in progress. This was my capstone project at University
 I am open to accepting contributions from others. I have tested on the Raspberry Pi 4 and Raspberry Pi Zero 2 W using the Adafruit RGB Matrix Bonnet with the PWM mod. 
 I intend to add more modes of operation in the future!
 
-#External Dependencies
+# External Dependencies
 This application relies on some kind of web server being installed
 It also makes use of https://github.com/hzeller/rpi-rgb-led-matrix
 And the utils folder makes use of FFMPEG
+The frontend makes use of libgif-js and several uses of typescript
+
+# Other information
+The websocket for communication between front and backends is running on port 9002. 
+I have not programmed anything to use HTTPS, as I had no intent on using this application outside my LAN.
