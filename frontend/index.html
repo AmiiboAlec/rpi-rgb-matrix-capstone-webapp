@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Alec's LED Matrix Applet</title>
+        <script>
+            function clear_screen() {
+                const hostname = "ledtest.local"
+                const port_number = 9002
+                let a = new WebSocket(`ws://${hostname}:${port_number}`);
+                a.onopen = () => {a.send("NEW\nclrscreen")};
+            }
+        </script>
+    </head>
+
+    <!--This is the root page to link to all the individual pages for each individual mode of operation.
+    Let it be known that I am not a UI guy.-->
+    <body>
+        <h1>Alec's LED Matrix Webapp</h1>
+        <p>Click one of the links below to access the various modes programmed onto your LED matrix</p>
+        <ul>
+            <li><a href="./image_mode.html">Image/Animation Mode</a></li>
+            <li><a href="./text_mode.html">Text Mode</a></li>
+            <li><a href="./clock_mode.html">Clock Mode</a></li>
+        </ul>
+        <br>
+        <input type="button" value="Reset Display" onclick="clear_screen()">
+    </body>
+</html>

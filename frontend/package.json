@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "gif-frames": "^0.2.4",
+    "libgif": "^0.0.3",
+    "undici": "^5.28.2",
+    "undici-types": "^5.28.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.2",
+    "typescript": "^5.1.6"
+  }
+}

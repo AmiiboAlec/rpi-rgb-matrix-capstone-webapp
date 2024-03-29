@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Alec's LED Sign Applet</title>
+    </head>
+    <body>
+        <script src="node_modules\libgif\libgif.js"></script>
+        <script src="vars.ts"></script>
+        <script defer>
+
+            var testlist;
+            var frameList;
+            var activeFrame;
+            var preview = false;
+            window.onload = function () {
+                frameList = new canvasFrame();
+            }
+
+            window.onresize = handle_resize;
+
+            function handle_resize() {
+                //console.log("resize");
+                if (frameList != null) drawCanvas();
+            }
+            const hostname = "AlecPi"; const port = 9002; const default_port = 80; const default_port_tls = 443;
+            var ws = new WebSocket("ws:192.168.0.210:9002");
+
+            ws.onmessage = function(event) {
+                let message = event.data;
+                if (message === "ready") {
+                    if (send_buffer.length != 0) ws.send(send_buffer.shift());
+                    else ws.send('EOC');
+                }
+            }
+
+            function manual_send() {
+                for (i in send_buffer) ws.send(i);
+            }
+            const frameIdList = {
+                canvas: "Image",
+                sequence: "new_gif_player",
+                text: "Text",
+                layeredCanvas: "Layered",
+                layeredText: "Layered",
+                clock: "Clock",
+                audioVisualizer: "Audio"
+            }
+            var send_buffer = [];
+            const width = 64;
+            const height = 32;
+            var currentFrame = 0;
+
+            function mouse_to_pix_xy(event, c) {
+                let rect = c.getBoundingClientRect();
+                let mouseX = event.clientX - rect.left;
+                let mouseY = event.clientY - rect.top;
+                let radius = c.width / 128;
+                let output = {x:0,y:0};
+                output.x = Math.floor(mouseX / (2 * radius));
+                output.y = Math.floor(mouseY / (2 * radius));
+                return output;
+            }
+
+            function drawPix(c, x, y, r, g, b) {
+                let ctx = c.getContext('2d');
+                const radius = c.width / 128;
+                const centerx = radius * (x * 2 + 1);
+                const centery = radius * (y * 2 + 1);
+
+                if (preview) {
+                    let colorstring = Math.round(r).toString(16).padStart(2,'0') + Math.round(g).toString(16).padStart(2,'0') + Math.round(b).toString(16).padStart(2,'0');
+                    ws.send(`Pixel ${x},${y}: ` + colorstring);
+                }
+
+                ctx.beginPath();
+                ctx.arc(centerx, centery, radius, 0, 2 * Math.PI, false);
+                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                ctx.fill();
+            }
+
+            function drawBackground(c) {
+                let ctx = c.getContext('2d');
+
+                ctx.beginPath();
+                ctx.fillStyle = 'darkgrey';
+                ctx.rect(0,0,c.width,c.height);
+                ctx.fill();
+            }
+
+            class displayFrame {
+                constructor() {
+                    if (this.constructor == displayFrame) throw new Error('Displayframe is abstract');
+                }
+                toString() {
+                    throw new Error ('Virtual Function');
+                }
+                copyToOutputBuffer(buffer) { 
+                    throw new Error ('Virtual Function');
+                }
+                draw() {
+                    throw new Error ('Virtual Function');
+                }
+                handle_mouse(event) {
+                    throw new Error ('Virtual Function');
+                }
+                header_info() {
+                    throw new Error ('Virtual Function');
+                }
+                upload() {
+                    throw new Error ('Virtual Function');
+                }
+            }
+
+            class textFrame extends displayFrame {
+                constructor() {
+                    super();
+                    this.text = [];
+                    {
+                        let inputText = document.getElementsByClassName('tField');
+                        for (let i = 0; i < inputText.length; i++) text[i] = inputText[i].value;
+                    }
+                    this.scrollSpeed = [];
+                    {
+                        let inputSpeed = document.getElementsByClassName('sField');
+                        for (let i = 0; i < inputSpeed.length; i++) scrollSpeed[i] = inputSpeed[i].value;
+                    }
+                    this.pixels = [];
+                    for (let i = 0; i < 4; i++) {
+                        pixels[i] = []; //to be implemented later}
+                        for (let j = 0; j < inputText[i].length; j++) pixels[i][j] = new Color(255,255,255);
+                    }
+                    this.classId = frameIdList.text;
+                    this.scrollAmt = [0,0,0,0];
+                }
+                toString() {
+                    let output = [];
+                    for (let i = 0; i < 4; i++) {
+                        output.push(this.text[i]);
+                        let colorString = [];
+                        for (let j = 0; j < this.pixels[i].length; j++) {
+                            colorString.push(this.pixels[i][j].toString());
+                        }
+                        output.push(colorString.join('|'));
+                        output.push(this.scrollSpeed[i].toString());
+                    }
+                    return output.join('\a');
+                }
+                copyToOutputBuffer(buffer) {
+                    buffer.push(this.toString());
+                }
+                draw(c) {
+                    const row_size = 8;
+                    for (let row = 0; row < 4; row++) {
+                        for (let column = 0; column < width; column++) {
+                            let index = text[row].charCodeAt((column + scrollAmt[row]) / 6);
+                            let x = column;
+                            let charFont = fontpack[index][column + scrollAmt[row]];
+                            for (let subrow = 7; subrow >= 0; subrow--) {
+                                let y = (row * row_size) + subrow;
+                                let on = charFont % 2;
+                                drawPix(c, x, y, this.pixels[index].r * on, this.pixels[index].g * on, this.pixels[index].b * on);
+                                charFont /= 2;
+                            }
+                        }
+                    }
+                }
+                handle_mouse(event) {
+                    let circleIndex = mouse_to_pix_xy(event, document.getElementById('imageGrid'));
+                    alert("not yet implemented");
+                }
+            }
+
+            class canvasFrame extends displayFrame {
+                constructor () {
+                    super();
+                    this.colorList = [];
+                    for (let i = width * height - 1; i >= 0; i--) this.colorList[i] = new color(0,0,0);
+                    this.classId = frameIdList.canvas;
+                }
+                toString() {
+                    let output = [];
+                    for (let i = 0; i < this.colorList.length; i++) output.push(this.colorList[i].toString());
+                    return output.join('|');
+                }
+                copyToOutputBuffer(buffer) {
+                    buffer.push(this.classId + "\n" + this.toString());
+                }
+                draw(c) {
+                    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+                        let index = (y * width) + x;
+                        drawPix(c, x, y, this.colorList[index].r, this.colorList[index].g, this.colorList[index].b);
+                    }
+                }
+                setColor(index, r, g, b) {
+                    if (index >= this.colorList.length) throw new Error("Color Index Out of bounds");
+                    this.colorList[index] = new color(r,g,b);
+                }
+                handle_mouse(event) {
+                    let circleIndex = mouse_to_pix_xy(event, document.getElementById('imageGrid'));
+                    let colorValue = document.getElementById('userColor').value;
+                    let a = new color(parseInt(colorValue.substring(1,3),16),
+                    parseInt(colorValue.substring(3,5),16),
+                    parseInt(colorValue.substring(5,7),16));
+                    drawPix(document.getElementById('imageGrid'), circleIndex.x, circleIndex.y,
+                    a.r,a.g,a.b);
+                    this.colorList[circleIndex.y * width + circleIndex.x] = a;
+                }
+                header_info() {
+                    return this.classId + "\n" + "1" + "\n" + "1000";
+                }
+            }
+
+            class sequence extends displayFrame {
+                constructor () {
+                    super();
+                    this.frameList = [];
+                    //this.frameList[0] = new canvasFrame();
+                    this.classId = frameIdList.sequence;
+                    this.currentFrame = 0;
+                    this.delay = 10; //library reports delay in centiseconds?
+                }
+                toString() {
+                    let output = [];
+                    console.log(this.frameList);
+                    for (let i = 0; i < this.frameList.length; i++) {
+                        output.push(this.frameList[i].toString());
+                    }
+                    console.log(output);
+                    return output.join('\n');
+                }
+                copyToOutputBuffer(buffer) {
+                    console.log("copy enter");
+                    let output = this.toString().split('\n');
+                    //console.log(output);
+                    buffer.push(output);
+                }
+                draw(c) {
+                    this.frameList[this.currentFrame].draw(c);
+                }
+                incrementFrameCounter() {
+                    this.currentFrame++;
+                    this.currentFrame %= this.frameList.length;
+                }
+                decrementFrameCounter() {
+                    this.currentFrame--;
+                    if (this.currentFrame < 0) this.currentFrame = this.frameList.length - 1;
+                }
+                appendFrame(frame) {
+                    this.frameList.push(frame);
+                }
+                getCurrentFrame() {
+                    return this.frameList[this.currentFrame];
+                }
+                handle_mouse(event) {
+
+                    this.frameList[this.currentFrame].handle_mouse(event);
+                }
+                set_delay(delay) {
+                    this.delay = delay;
+                }
+                upload() {
+                    preview = false;
+                    let send_queue = [];
+                    send_queue.push("NEW\n" + this.header_info());
+                    let text_encoding = this.toString().split('\n');
+                    for (let i = 0; i < text_encoding.length; i++) {
+                        send_queue.push(text_encoding[i]);
+                    }
+                    for (let i = 0; i < send_queue.length; i++) {
+                        console.log(send_queue[i]);
+                        ws.send(send_queue[i]);
+                    }
+                }
+                header_info() {
+                    return this.classId + "\n" + "Delay: " + (this.delay * 10); 
+                }
+            }
+            class color {
+                constructor (r,g,b) {
+                    if (r <= 255) this.r = r;
+                    else this.r = 255;
+                    if (g <= 255) this.g = g;
+                    else this.g = 255;
+                    if (b <= 255) this.b = b;
+                    else this.b = 255;
+                }
+                toString() {
+                    this.r = Math.round(this.r);
+                    this.g = Math.round(this.g);
+                    this.b = Math.round(this.b);
+                    if (this.r > 255) this.r = 255;
+                    if (this.g > 255) this.g = 255;
+                    if (this.b > 255) this.b = 255;
+                    if (this.r < 0) this.r = 0;
+                    if (this.g < 0) this.g = 0;
+                    if (this.b < 0) this.b = 0;
+                    return (this.r.toString(16).padStart(2, '0') + this.g.toString(16).padStart(2, '0') + this.b.toString(16).padStart(2, '0')).toUpperCase();
+                }
+            }
+
+            function drawCanvas() {
+                var c = document.getElementById("imageGrid"); //calculating necessary constants
+                c.width = window.innerWidth * 0.8;
+                c.height = window.innerWidth * 0.4;
+                var ctx = c.getContext("2d");
+                var spacingInterval = c.width / 128;
+                var centerX = spacingInterval;
+                var centerY = spacingInterval; 
+
+                drawBackground(c);
+
+                frameList.draw(c);
+            }
+
+            function submit() {
+                document.getElementById("error").style.display = "none";
+                if (frameList === null) {documnet.getElementById("error").style.display = "block"; return;}
+                //frameList.copyToOutputBuffer(send_buffer);
+                //ws.send('NEW' + '\n' + frameList.header_info()); //alert the server that data is ready, and then wait.
+                //document.getElementById("send alert").style.display = "block";
+                frameList.upload();
+            }
+
+            function checkInputType () {
+                let disp = document.getElementsByClassName("preview");
+                for (let i = 0; i < disp.length; i++) disp[i].style.display = "none";
+                let input = document.getElementsByClassName("ButtonSelector");
+                for (let i = 0; i < input.length; i++) if (input[i].checked) {
+                    disp[i].style.display = "block";
+                    if (input[i].classList.contains("imagetype")) drawCanvas();
+                }   
+            }
+
+            function incrementFrameCounter() {
+                if (frameList instanceof sequence) {
+                    frameList.incrementFrameCounter();
+                    frameList.draw(document.getElementById('imageGrid'));
+                }
+            }
+            function decrementFrameCounter() {
+                if (frameList instanceof sequence) {
+                    frameList.decrementFrameCounter();
+                    frameList.draw(document.getElementById('imageGrid'));
+                }
+            }
+
+            function processImage() {
+                const selectedFile = document.getElementById("imageUpload").files[0];
+                console.log(selectedFile);
+                let filename = selectedFile.name;
+                console.log(filename);
+                let isImage = (filename) => {
+                    const valid_extensions = ["png", "jpg", "bmp"];
+                    for (var i in valid_extensions) {console.log(i); if (filename.toLowerCase().includes(valid_extensions[i])) return true;}
+                    return false;
+                }
+                if (filename.includes("gif")) {
+                    //let longProcess = new Worker(processGIF(selectedFile));
+                    processGIF(selectedFile); 
+                    return;
+                }
+                if (!isImage(filename)) {
+                    alert('not an image');
+                    return;
+                }
+                let resize = document.getElementById('resizer'); //canvas
+                resize.width = 64; resize.height = 32; //the dimensions I want
+                //console.log(target.src);
+                let img = new Image();
+                let reader = new FileReader();
+                let target = document.getElementById('offscreen preview');
+                let ctx = resize.getContext('2d'); //canvas context
+                img.onload = () => {
+                    frameList = processFrame(img);
+                    frameList.draw(document.getElementById('imageGrid'));
+                }
+                reader.onload = function (event) {
+                    img.src = event.target.result;
+                }
+                ctx.imageSmoothingEnabled = true; 
+                reader.readAsDataURL(selectedFile);
+
+                
+                //img.src = target.src; //the data url gotten before
+                
+                //ctx.drawImage(target, 0, 0, 64, 32);
+                
+                /*ctx.beginPath();
+                ctx.fillStyle = 'darkgrey';
+                ctx.rect(0,0, 64,32);
+                ctx.fill();*/
+                    
+            }
+
+            function processGIF(selectedFile) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    /*var temp_image = document.createElement("img");
+                    temp_image.onload = () => {
+                        console.log("ran");
+                        var gif_frames = new SuperGif(temp_image);
+                        gif_frames.load(function() {
+                            console.log(frames);
+                        });
+                    };
+                    temp_image.src = e.target.result;*/
+
+                    var gif_frames = new SuperGif();
+                    gif_frames.load_url(e.target.result, function () {
+                        let frames = gif_frames.get_frames();
+                        var tempCanvas1 = document.getElementById('resizer'); //used for several conversions
+                        frameList = new sequence();
+                        //console.log("before the loop");
+                        frameList.set_delay(frames[0].delay);
+                        frames.forEach((frame) => {
+                            let ctx = tempCanvas1.getContext('2d');
+                            tempCanvas1.width = frame.data.width;
+                            tempCanvas1.height = frame.data.height;
+                            ctx.putImageData(frame.data,0,0);
+                            //console.log(tempCanvas1);
+                            var image = new Image();
+                            image.onload = () => {
+                                frameList.appendFrame(processFrame(image));
+                                //console.log(frameList, "loaded");
+                            };
+                            image.src = tempCanvas1.toDataURL();
+                        });
+                        //console.log(frameList, "potentially unloaded");
+                        //frameList.draw(document.getElementById('imageGrid'));
+                    });
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+            
+
+            function processFrame(image) {
+                var tempCanvas = document.createElement('canvas');
+                var ctx = tempCanvas.getContext('2d');
+                tempCanvas.width = image.width;
+                tempCanvas.height = image.height;
+                ctx.drawImage(image, 0, 0, 64, 32);
+                let pixeldata = ctx.getImageData(0,0,64,32);
+                let pixelList = pixeldata.data;
+                let output = new canvasFrame();
+                for (let i = 0; i < pixelList.length; i += 4) {
+                    output.setColor(i >> 2, pixelList[i], pixelList[i + 1], pixelList[i + 2]);
+                }
+                return output;
+            }
+
+            function ch_preview() {
+                preview = true;
+                if (preview == true) {
+                    ws.send("NEW\nnew_live_preview");
+                }
+            }
+        </script>
+        
+        <!--I will use no CSS. i hate css-->
+        <h1>Alec's LED Sign Webapp</h1>
+        <input type="file" id="imageUpload" accept="image/*" onchange="processImage()">
+        <div id="Type Selector">
+            <input class="ButtonSelector imagetype" type="radio" onclick="checkInputType()" id="Image Button" name="input type" value="image">
+            <label for="Image Button">Image</label><br>
+            <input class="ButtonSelector" type="radio" onclick="checkInputType()" id="Text Button" name="input type" value="text"> 
+            <label for="Text Button">Text</label>
+        </div>
+        <div class="preview" id="Image Preview" style="display:none;">
+            <p>if the picture does not appear, use the arrow buttons</p>
+            <input type="color" id="userColor"><br>
+            <canvas id="imageGrid" onclick="frameList.handle_mouse(event)"></canvas>
+            <button onclick="decrementFrameCounter()">&lt;-</button>
+            <button onclick="incrementFrameCounter()">-&gt;</button>
+
+        </div>
+        <div class="preview" id="Text Input" style="display:none;">
+            <input type="text" class="tField" id="row1"><input type="number" class="sField"><br>
+            <input type="text" class="tField" id="row2"><input type="number" class="sField"><br>
+            <input type="text" class="tField" id="row3"><input type="number" class="sField"><br>
+            <input type="text" class="tField" id="row4"><input type="number" class="sField"><br>
+        </div>
+        <div class="submit">
+            <button type="submit" onclick="submit()">Submit</button>
+            <p id="error" style="display:none;">Make a choice first!</p>
+        </div>
+        <canvas id="globalpreview"></canvas>
+        <p id="send alert" style="display:none">Data is sending...</p>
+        <canvas id="resizer"></canvas>
+        <input id="previewmode" onclick="ch_preview()" type="checkbox">
+    </body>
+</html>

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        
+        "declaration": true,
+        "target": "es2015",
+        "module": "es2015",
+        "sourceMap": true,
+        "lib": [
+            "ES2017",
+            "dom",
+            "ScriptHost"
+        ]
+    }
+}

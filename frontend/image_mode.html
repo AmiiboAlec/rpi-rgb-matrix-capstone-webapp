@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>
+            Image Mode
+        </title>
+        <script type="module" src="./image_mode.js"></script>
+        <script src="./node_modules/libgif/libgif.js"></script>
+        <script type="module">
+            import {sequence} from "./image_mode.js"
+
+            const width = 64; const height = 32;
+
+            let canvas_state;
+            window.onload = () => {
+                canvas_state = new sequence(width, height, document.getElementById("Preview_div"));
+                canvas_state.get_upload_button().onchange = () => {
+                    const selectedFile = canvas_state.get_upload_button().files[0];
+                    console.log(selectedFile);
+                    let filename = selectedFile.name;
+                    let isImage = (filename) => {
+                        const valid_extensions = ["png", "jpg", "bmp"];
+                        for (var i in valid_extensions) {if (filename.toLowerCase().includes(valid_extensions[i])) return true;}
+                        return false;
+                    }
+                    if (filename.toLowerCase().includes("gif")) {
+                        //let longProcess = new Worker(processGIF(selectedFile));
+                        processGIF(selectedFile); 
+                        return;
+                    }
+                    if (!isImage(filename)) {
+                        alert('not an image');
+                        return;
+                    }
+                    let img = new Image();
+                    let reader = new FileReader();
+                    img.onload = () => {
+                        canvas_state.new_image(img);
+                    }
+                    reader.onload = (e) => {
+                        img.src = e.target.result;
+                    }
+                    reader.readAsDataURL(selectedFile);
+                }
+            }
+            let imageList = [];
+            let imageDelay = 10;
+            window.addEventListener("array_loaded", (e) => {
+                canvas_state.new_framelist(imageList);
+                canvas_state.set_delay(imageDelay);
+                imageList = [];
+            })
+            function processGIF(selectedFile) {
+                const event = new Event("array_loaded");
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    let gif_obj = document.createElement('img');
+                    gif_obj.onload = (e2) => {
+                        console.log("BREAK");
+                        var gif_frames = new SuperGif({gif: gif_obj});
+                        console.log(e.target.result);
+                        gif_frames.load_url(e.target.result, () => {
+                            let frames = gif_frames.get_frames();
+                            let resizer = document.createElement("canvas");
+                            let resizer_ctx = resizer.getContext("2d", {willReadFrequently: true});
+                            imageDelay = 10 * frames[0].delay
+                            
+                            let counter = 0;
+                            frames.forEach((frame) => {
+                                resizer.width = frame.data.width;
+                                resizer.height = frame.data.height;
+                                resizer_ctx.putImageData(frame.data, 0, 0);
+    
+                                let image = new Image();
+                                image.onload = () => {
+                                    imageList.push(image);
+                                    if (++counter == frames.length) window.dispatchEvent(event);
+                                }
+                                let url = resizer.toDataURL();
+                                image.src = resizer.toDataURL();
+                            })
+                            //while (counter < frames.length);
+                        })
+                    }
+                    gif_obj.src = e.target.result;
+                }
+                reader.readAsDataURL(selectedFile);
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Alec's LED Matrix Webapp</h1>
+        <p>This is the Image/Animation mode. You can draw an image on the canvas, or upload your own using the upload button.</p>
+        <div id="Preview_div"></div>
+    </body>
+</html>
