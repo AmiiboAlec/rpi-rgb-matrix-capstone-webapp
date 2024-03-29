@@ -1,0 +1,5 @@
+file opened
+Created Shared Memory area
+Registered signal
+Entered Main Loop
+Signal handled

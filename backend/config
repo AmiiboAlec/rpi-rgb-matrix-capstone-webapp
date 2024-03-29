@@ -1,0 +1,6 @@
+WIDTH: 64
+HEIGHT: 32
+TOP-TO-MID-FIFO: /tmp/led-dfifo-top
+MID-TO-TOP-FIFO: /tmp/led-ufifo-top
+MID-TO-BOTTOM-FIFO: /tmp/led-dfifo-bottom
+BOTTOM-TO-MID-FIFO: /tmp/led-ufifo-bottom
